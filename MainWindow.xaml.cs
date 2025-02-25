@@ -105,40 +105,66 @@ namespace CheckMail
                 return;
             }
 
-            // Récupérer la plage de dates depuis les DatePickers (si non sélectionnées, utiliser des valeurs extrêmes)
-            DateTime startDate = StartDatePicker.SelectedDate.HasValue ? StartDatePicker.SelectedDate.Value : DateTime.MinValue;
-            DateTime endDate = EndDatePicker.SelectedDate.HasValue ? EndDatePicker.SelectedDate.Value : DateTime.MaxValue;
+            // 📌 Définition des filtres
+            bool filterByDate = StartDatePicker.SelectedDate.HasValue && EndDatePicker.SelectedDate.HasValue;
+            DateTime startDate = filterByDate ? StartDatePicker.SelectedDate.Value : DateTime.MinValue;
+            DateTime endDate = filterByDate ? EndDatePicker.SelectedDate.Value.AddDays(1).AddTicks(-1) : DateTime.MaxValue;
 
+            bool filterByType = TypeFilterComboBox.SelectedItem != null;
+            string selectedType = filterByType ? ((ComboBoxItem)TypeFilterComboBox.SelectedItem)?.Content?.ToString() : "Tous";
 
-            string selectedType = ((ComboBoxItem)TypeFilterComboBox.SelectedItem)?.Content?.ToString() ?? "Tous";
-            // Si "Tous" est sélectionné pour le domaine, on ne filtre pas par domaine
-            selectedDomain = selectedDomain == "Tous" ? null : selectedDomain;
+            bool filterByDomain = selectedDomain != "Tous" && !string.IsNullOrWhiteSpace(selectedDomain);
 
             EmailsGrid.Items.Clear();
 
-            var filteredEmails = _categorizedEmails
+            // 📌 Récupération des e-mails
+            var allEmails = _categorizedEmails
                 .SelectMany(cat => cat.Value ?? new Dictionary<string, Dictionary<string, List<EmailItem>>>())
                 .SelectMany(type => type.Value ?? new Dictionary<string, List<EmailItem>>())
                 .SelectMany(client => client.Value ?? new List<EmailItem>())
-                .Where(email =>
-                    email.Date >= startDate && email.Date <= endDate &&
-                    (selectedType == "Tous" || email.Type == selectedType) &&
-                    (selectedDomain == null ||
-                     (!string.IsNullOrWhiteSpace(email.Email) &&
-                      email.Email.Split('@').Last().Trim().Replace("'", "").Replace("(", "").Replace(")", "")
-                          .Equals(selectedDomain, StringComparison.OrdinalIgnoreCase)))
-                )
                 .ToList();
 
-            System.Diagnostics.Debug.WriteLine($"✅ {filteredEmails.Count} e-mails après filtrage.");
+            System.Diagnostics.Debug.WriteLine($"📧 Total e-mails avant filtrage : {allEmails.Count}");
 
-            foreach (var email in filteredEmails)
+            // 📌 Appliquer les filtres de manière séquentielle
+            if (filterByDate)
+            {
+                allEmails = allEmails
+                    .Where(email => email.Date >= startDate && email.Date <= endDate)
+                    .ToList();
+                System.Diagnostics.Debug.WriteLine($"📆 Après filtrage date : {allEmails.Count}");
+            }
+
+            if (filterByType && selectedType != "Tous")
+            {
+                allEmails = allEmails
+                    .Where(email => email.Type.Equals(selectedType, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                System.Diagnostics.Debug.WriteLine($"📩 Après filtrage type ({selectedType}) : {allEmails.Count}");
+            }
+
+            if (filterByDomain)
+            {
+                allEmails = allEmails
+                    .Where(email =>
+                        !string.IsNullOrWhiteSpace(email.Email) &&
+                        email.Email.Split('@').Last().Trim().Replace("'", "").Replace("(", "").Replace(")", "")
+                            .Equals(selectedDomain, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                System.Diagnostics.Debug.WriteLine($"🌐 Après filtrage domaine ({selectedDomain}) : {allEmails.Count}");
+            }
+
+            // 📌 Ajouter les e-mails filtrés à la grille
+            foreach (var email in allEmails)
             {
                 EmailsGrid.Items.Add(email);
             }
 
+            // 📌 Mettre à jour le compteur
             UpdateResultCount();
         }
+
+
 
 
         // Méthode pour peupler la ComboBox des domaines à partir des e-mails chargés
