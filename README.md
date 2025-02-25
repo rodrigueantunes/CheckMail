@@ -8,13 +8,13 @@ CheckMail est une application WPF permettant de récupérer, trier et filtrer le
 
 ## 🛠 Fonctionnalités principales
 
-✅ **Récupération automatique des e-mails Outlook** (Inbox et envoyés)
-✅ **Filtrage avancé** par date, type d'e-mail et nom de domaine
-✅ **Interface dynamique** avec DataGrid adaptable à la fenêtre
-✅ **Affichage du nombre total d'e-mails**
-✅ **Optimisation des performances pour une récupération rapide des e-mails**
-✅ **Support des sous-dossiers dans la boîte de réception**
-✅ **Extraction unique des noms de domaine** pour une sélection rapide
+- ✅ **Récupération automatique des e-mails Outlook** (Inbox et envoyés)
+- ✅ **Filtrage avancé** par date, type d'e-mail et nom de domaine
+- ✅ **Interface dynamique** avec DataGrid adaptable à la fenêtre
+- ✅ **Affichage du nombre total d'e-mails**
+- ✅ **Optimisation des performances pour une récupération rapide des e-mails**
+- ✅ **Support des sous-dossiers dans la boîte de réception**
+- ✅ **Extraction unique des noms de domaine** pour une sélection rapide
 
 ---
 
