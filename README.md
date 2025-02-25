@@ -29,6 +29,8 @@ CheckMail est une application WPF permettant de récupérer, trier et filtrer le
 
 ## 📌 Utilisation
 
+![image_2025-02-25_192633907](https://github.com/user-attachments/assets/cd66939a-6e0a-41cf-9885-7186d93f1032)
+
 1. **Sélectionnez un nombre de jours** pour filtrer les e-mails.
 2. **Chargez les e-mails** via le bouton `Charger les e-mails`.
 3. **Affinez votre recherche** avec les filtres (dates, type, domaine).
