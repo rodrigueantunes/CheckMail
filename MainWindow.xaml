@@ -1,0 +1,107 @@
+﻿<Window x:Class="CheckMail.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CheckMail" Height="600" Width="900" SizeToContent="Manual">
+    <Grid>
+        <!-- Définition des lignes et colonnes -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Recherche et filtres -->
+            <RowDefinition Height="Auto"/>
+            <!-- Bouton et nombre de jours -->
+            <RowDefinition Height="*"/>
+            <!-- Tableau extensible -->
+            <RowDefinition Height="Auto"/>
+            <!-- Compteur de résultats -->
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Contenu principal -->
+        <StackPanel Orientation="Vertical" Margin="10" Grid.Row="0" Grid.Column="0">
+            <!-- Zone de recherche et filtrage par domaine -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <!-- Recherche -->
+                <TextBox x:Name="SearchBox" Width="300" Height="30" 
+                         VerticalAlignment="Top" Margin="0,0,10,0"
+                         Text="Rechercher..." Foreground="Gray">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Triggers>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter Property="Text" Value=""/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                <Button x:Name="BtnSearch" Content="Rechercher" Width="100" Height="30" Click="BtnSearch_Click" Margin="0,0,10,0"/>
+
+                <!-- Filtrage par domaine -->
+                <Label Content="Domaine :" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox x:Name="DomainFilterComboBox" Width="150" SelectionChanged="DomainFilterComboBox_SelectionChanged">
+                    <ComboBoxItem Content="Tous" IsSelected="True"/>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- Zone de filtrage par date -->
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,10">
+                <Label Content="Du :" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <DatePicker x:Name="StartDatePicker" Width="150" Margin="0,0,10,0"/>
+                <Label Content="Au :" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <DatePicker x:Name="EndDatePicker" Width="150" Margin="0,0,10,0"/>
+                <Button x:Name="BtnFilterDate" Content="Filtrer" Width="100" Click="BtnFilterDate_Click"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Zone en haut à droite avec la TextBox et le bouton -->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Grid.Row="0" Grid.Column="1">
+            <!-- Zone de sélection du nombre de jours -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Label Content="Jours :" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBox x:Name="NumberOfDaysTextBox" Width="50" Text="365" HorizontalAlignment="Right"/>
+            </StackPanel>
+
+            <!-- Bouton Charger les e-mails -->
+            <Button x:Name="BtnLoadEmails" 
+                    Content="Charger les e-mails" 
+                    Width="200" Height="30" 
+                    Click="BtnLoadEmails_Click"
+                    Margin="0,0,0,10"/>
+
+            <!-- ComboBox pour sélectionner le type d'e-mail -->
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Type :" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox x:Name="TypeFilterComboBox" Width="100" SelectionChanged="TypeFilterComboBox_SelectionChanged">
+                    <ComboBoxItem Content="Tous" IsSelected="True"/>
+                    <ComboBoxItem Content="Reçu"/>
+                    <ComboBoxItem Content="Envoyé"/>
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- DataGrid pour afficher les e-mails -->
+        <DataGrid x:Name="EmailsGrid" 
+                  Grid.Row="2" Grid.ColumnSpan="2"
+                  AutoGenerateColumns="False" 
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Sujet" Binding="{Binding Subject}" Width="*" MinWidth="150"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*" MinWidth="250"/>
+                <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="*" MinWidth="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Label pour afficher le nombre d'e-mails trouvés -->
+        <Label x:Name="LblResultCount"
+               Grid.Row="3" Grid.ColumnSpan="2"
+               HorizontalAlignment="Left" VerticalAlignment="Bottom"
+               FontSize="14" FontWeight="Bold"
+               Margin="10" Content="Nombre d'e-mails trouvés : 0"/>
+    </Grid>
+</Window>
