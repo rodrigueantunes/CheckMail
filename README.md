@@ -24,7 +24,7 @@ CheckMail est une application WPF permettant de récupérer, trier et filtrer le
 - Télécharger la release
 
 ### 2️⃣ **Ouverture**
-Ouvrez l'executable
+- Ouvrez l'executable
 ---
 
 ## 📌 Utilisation
